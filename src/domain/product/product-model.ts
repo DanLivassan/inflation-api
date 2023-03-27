@@ -42,7 +42,7 @@ export class Product {
     toJSON() {
         return {
             description: this.description,
-            ncm: this.ncm,
+            ncm: this.ncm.toString(),
             ncmGroup: this.ncmGroup,
             price: this.price,
             picture: this.picture,

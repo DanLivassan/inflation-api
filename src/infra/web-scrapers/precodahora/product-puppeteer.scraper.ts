@@ -2,19 +2,28 @@ import { Injectable } from '@nestjs/common';
 import axios, { AxiosRequestConfig } from 'axios';
 import * as xpath from 'xpath'
 import { DOMParser } from 'xmldom';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-extra';
+import { Browser } from 'puppeteer'
 import { IProductScraper } from 'src/domain/product/iproduct-scraper';
-
-
+import proxies from 'src/infra/web-scrapers/proxies/proxies.json'
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+puppeteer.use(StealthPlugin())
 @Injectable()
 export class ProductPuppeteerScraper implements IProductScraper {
-
-    constructor() {
-
-    }
+    browser: Browser
+    constructor() { }
     async getHeaders() {
-        const browser = await puppeteer.launch({ headless: true })
-        const page = await browser.newPage()
+        const { ip, password, username } = proxies[Math.floor(Math.random() * proxies.length)];
+        console.log('Using: ', ip)
+        this.browser = await puppeteer.launch({
+            headless: true,
+            // executablePath: '/opt/google/chrome/google-chrome',
+            // userDataDir: '/home/dan/.config/google-chrome/Default',
+            args: [`--proxy-server=http://${ip}`]
+        })
+
+        const page = await this.browser.newPage()
+        await page.authenticate({ username, password })
         await page.setViewport({ width: 1080, height: 1024 });
         await page.goto('https://precodahora.ba.gov.br/')
         await page.waitForSelector("#fake-sbar")
@@ -39,7 +48,7 @@ export class ProductPuppeteerScraper implements IProductScraper {
                 fatalError: function (e) { console.error(e) }
             }
         }).parseFromString(content)
-        await browser.close()
+        await this.browser.close()
         const csrf = xpath.select('//*[@id="validate"]/@data-id', doc) as any
         return { csrf: csrf[0].nodeValue, cookies: cookiesParsed }
 
