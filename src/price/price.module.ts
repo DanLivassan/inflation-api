@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { PriceService } from './price.service';
 import { PriceController } from './price.controller';
-import { BaScraperService } from 'src/ba-scraper/ba-scraper.service';
+import { ProductPuppeteerScraper } from 'src/infra/web-scrapers/precodahora/product-puppeteer.scraper';
 
 @Module({
   controllers: [PriceController],
-  providers: [PriceService, BaScraperService]
+  providers: [PriceService, ProductPuppeteerScraper]
 })
 export class PriceModule { }

@@ -2,11 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { PriceService } from './price.service';
 import { CreatePriceDto } from './dto/create-price.dto';
 import { UpdatePriceDto } from './dto/update-price.dto';
-import { BaScraperService } from 'src/ba-scraper/ba-scraper.service';
+import { ProductPuppeteerScraper } from 'src/infra/web-scrapers/precodahora/product-puppeteer.scraper';
 
 @Controller('price')
 export class PriceController {
-  constructor(private readonly priceService: PriceService, private baScraper: BaScraperService) { }
+  constructor(private readonly priceService: PriceService, private productScraper: ProductPuppeteerScraper) { }
 
   @Post()
   create(@Body() createPriceDto: CreatePriceDto) {
@@ -15,8 +15,7 @@ export class PriceController {
 
   @Get()
   async findAll() {
-    const { csrf, cookies } = await this.baScraper.getCSRF()
-    return await this.baScraper.getProducts(csrf, cookies);
+    return await this.productScraper.getProducts('BANANA');
   }
 
   @Get(':id')

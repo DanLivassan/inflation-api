@@ -3,25 +3,20 @@ import axios, { AxiosRequestConfig } from 'axios';
 import * as xpath from 'xpath'
 import { DOMParser } from 'xmldom';
 import puppeteer from 'puppeteer';
+import { IProductScraper } from 'src/domain/product/iproduct-scraper';
 
 
 @Injectable()
-export class BaScraperService {
+export class ProductPuppeteerScraper implements IProductScraper {
 
     constructor() {
 
     }
-    async getCSRF() {
-
-
-        const browser = await puppeteer.launch({ headless: false })
+    async getHeaders() {
+        const browser = await puppeteer.launch({ headless: true })
         const page = await browser.newPage()
-        // Set screen size
         await page.setViewport({ width: 1080, height: 1024 });
-
         await page.goto('https://precodahora.ba.gov.br/')
-
-
         await page.waitForSelector("#fake-sbar")
         await page.click('#fake-sbar');
         await page.waitForSelector('#top-sbar');
@@ -50,8 +45,8 @@ export class BaScraperService {
 
     }
 
-    async getProducts(csrfToken: string, cookies: string) {
-
+    async getProducts(termo: string): Promise<any[]> {
+        const { csrf: csrfToken, cookies } = await this.getHeaders()
         const config: AxiosRequestConfig = {
             responseType: "json",
             headers: {
@@ -64,7 +59,7 @@ export class BaScraperService {
             },
 
         }
-        const response = await axios.post('https://precodahora.ba.gov.br/produtos/', { termo: "feijao" }, config)
-        return response.data?.resultado ?? {}
+        const response = await axios.post('https://precodahora.ba.gov.br/produtos/', { termo }, config)
+        return response.data?.resultado ?? []
     }
 }
