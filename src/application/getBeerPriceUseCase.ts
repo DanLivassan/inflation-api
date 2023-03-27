@@ -5,7 +5,7 @@ import { IProductScraper } from "src/domain/product/iproduct-scraper";
 export class getBeerPriceUseCase {
     constructor(private productScraper: IProductScraper, private readonly productRepo: IProductRepo) { }
     async execute() {
-        const products = await this.productScraper.getProducts('CERVEJA')
+        const products = await this.productScraper.getProducts({ termo: 'CERVEJA' })
         const savedProducts: Partial<Product>[] = []
         for (const product of products) {
             const p = new Product(Product.convertProps(product.produto))

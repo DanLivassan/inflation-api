@@ -1,17 +1,25 @@
 import { Controller, Get, Logger } from '@nestjs/common';
-import { AppService } from './app.service';
+import { GetBasicShopUseCase } from './application/getBasicShopUseCase';
 import { getBeerPriceUseCase } from './application/getBeerPriceUseCase';
 
 @Controller()
 export class AppController {
   private logger: Logger;
-  constructor(private getBeerPriceUseCase: getBeerPriceUseCase) {
+  constructor(private getBeerPriceUseCase: getBeerPriceUseCase, private getBasicShopUseCase: GetBasicShopUseCase) {
     this.logger = new Logger('APP Controller')
   }
   @Get()
   async fire() {
-    this.logger.log('Getting products...')
+    this.logger.log('Getting beers...')
     const products = await this.getBeerPriceUseCase.execute()
     return products
+  }
+  @Get('/basic')
+  async basic() {
+    this.logger.log('Getting basic products...')
+    const products = await this.getBasicShopUseCase.execute()
+    return products.map(p => {
+      return { ...p, ncm: p.ncm.toString() }
+    })
   }
 }
