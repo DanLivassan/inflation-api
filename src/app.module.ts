@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PriceModule } from './price/price.module';
 import { getBeerPriceUseCase } from './application/getBeerPriceUseCase';
 import { PrismaService } from './infra/database/prisma.service';
 import { ProductPuppeteerScraper } from './infra/web-scrapers/precodahora/product-puppeteer.scraper';
 import { ProductPrismaRepo } from './infra/database/product-prisma.repo';
-import { CalculateBasicShopUseCase } from './application/calculateBasicShopUseCase';
+import { GetBasicShopUseCase } from './application/getBasicShopUseCase';
 
 @Module({
-  imports: [PriceModule],
+  imports: [],
   controllers: [AppController],
   providers: [AppService, PrismaService, ProductPuppeteerScraper, ProductPrismaRepo,
     {
@@ -19,9 +18,9 @@ import { CalculateBasicShopUseCase } from './application/calculateBasicShopUseCa
       }, inject: [ProductPuppeteerScraper, ProductPrismaRepo]
     },
     {
-      provide: CalculateBasicShopUseCase,
+      provide: GetBasicShopUseCase,
       useFactory: (scrapService: ProductPuppeteerScraper, productPrismaRepo: ProductPrismaRepo) => {
-        return new CalculateBasicShopUseCase(scrapService, productPrismaRepo)
+        return new GetBasicShopUseCase(scrapService, productPrismaRepo)
       }, inject: [ProductPuppeteerScraper, ProductPrismaRepo]
     }
   ],

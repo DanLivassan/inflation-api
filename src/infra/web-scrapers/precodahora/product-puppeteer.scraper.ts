@@ -54,7 +54,7 @@ export class ProductPuppeteerScraper implements IProductScraper {
 
     }
 
-    async getProducts(termo: string): Promise<any[]> {
+    async getProducts(data: { gtin?: string, termo?: string }): Promise<any[]> {
         const { csrf: csrfToken, cookies } = await this.getHeaders()
         const config: AxiosRequestConfig = {
             responseType: "json",
@@ -68,7 +68,7 @@ export class ProductPuppeteerScraper implements IProductScraper {
             },
 
         }
-        const response = await axios.post('https://precodahora.ba.gov.br/produtos/', { termo }, config)
+        const response = await axios.post('https://precodahora.ba.gov.br/produtos/', data, config)
         return response.data?.resultado ?? []
     }
 }

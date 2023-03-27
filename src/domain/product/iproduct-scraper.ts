@@ -1,4 +1,4 @@
 export interface IProductScraper {
     getHeaders()
-    getProducts(termo: string): Promise<any[]>
+    getProducts(data: { gtin?: string, termo?: string }): Promise<any[]>
 }
