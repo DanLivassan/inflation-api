@@ -27,10 +27,15 @@ model Product{
   price Float
   picture String
   createdAt DateTime? @default(now())
-  unit String?
-  gtin String?
+  unit String? @default("")
+  gtin String? @default("")
 }
 
+model InflationRepresentation{
+  id String @id @default(uuid())
+  totalPrice Float
+  createdAt DateTime? @default(now())
+}
 
 
 model User {
