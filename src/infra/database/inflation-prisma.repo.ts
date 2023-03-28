@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { IInflationRepo } from "src/domain/inflation-rep/iinflation-repo";
 import { InflationModel } from "src/domain/inflation-rep/inflation-model";
-import { Product } from "src/domain/product/product-model";
 import { PrismaService } from "./prisma.service";
 
 @Injectable()
