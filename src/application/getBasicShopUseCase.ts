@@ -11,7 +11,7 @@ export class GetBasicShopUseCase {
         for (const product of BASIC_PRODUCTS) {
             console.info(`--- Getting ${product} ---`)
             const products = await this.productScraper.getProducts({ gtin: product.gtin })
-            await asyncAwait(3000)
+            await asyncAwait(30000)
             console.info(`--- Start Processing ${product} ---`)
             for (const product of products) {
                 const p = new Product(Product.convertProps(product.produto))
